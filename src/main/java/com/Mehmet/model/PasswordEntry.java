@@ -1,4 +1,4 @@
-package model;
+package com.Mehmet.model;
 
 public class PasswordEntry {
     private String name;
@@ -34,5 +34,4 @@ public class PasswordEntry {
         this.password = password;
         this.category = category;
     }
-
 }
