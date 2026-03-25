@@ -22,7 +22,7 @@ public class UserDao {
     }
 
     public static int loginUser(String username, String password) {
-        String sql = "SELECT username, password FROM users WHERE username = ? and password = ?";
+        String sql = "SELECT username, password, user_id FROM users WHERE username = ? and password = ?";
 
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -38,6 +38,5 @@ public class UserDao {
             System.out.println("Login error: " + e.getMessage());
             return -1;
         }
-
     }
 }

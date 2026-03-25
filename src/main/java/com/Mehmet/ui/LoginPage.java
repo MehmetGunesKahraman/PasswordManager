@@ -79,8 +79,10 @@ public class LoginPage extends JFrame {
                 return;
             }
 
-            if (UserDao.loginUser(username, password) >= 1) {
-                JOptionPane.showMessageDialog(this, "User logged in successfully.");
+            int userId = UserDao.loginUser(username, password);
+            if (userId >= 1) {
+                new MainPage(userId);
+                dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Username or password is wrong!");
             }
