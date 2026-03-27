@@ -1,6 +1,6 @@
 package com.Mehmet.service;
 
-public class CipherEngine {
+public class  CipherEngine {
 
     public int calculateShift(String masterPassword) {
         int total = 0;
