@@ -1,12 +1,12 @@
 package com.Mehmet.model;
 
 public class PasswordEntry {
+    private int passwordId;
     private String siteName;
     private String siteUsername;
     private String sitePassword;
     private String category;
     private int userId;
-    private int passwordId;
 
 
     public String getSiteName() {
@@ -49,12 +49,12 @@ public class PasswordEntry {
         this.category = category;
     }
 
-    public PasswordEntry(String siteName, String siteUsername, String sitePassword, String category, int userId, int passwordId) {
+    public PasswordEntry(int passwordId, String siteName, String siteUsername, String sitePassword, String category, int userId) {
+        this.passwordId = passwordId;
         this.siteName = siteName;
         this.siteUsername = siteUsername;
         this.sitePassword = sitePassword;
         this.category = category;
         this.userId = userId;
-        this.passwordId = passwordId;
     }
 }

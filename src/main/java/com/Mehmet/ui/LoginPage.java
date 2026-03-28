@@ -73,15 +73,15 @@ public class LoginPage extends JFrame {
                 return;
             }
             char[] passwordChar = passwordField.getPassword();
-            String password = new String(passwordChar);
-            if (password.isEmpty()) {
+            String masterPassword = new String(passwordChar);
+            if (masterPassword.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Please enter a password.");
                 return;
             }
 
-            int userId = UserDao.loginUser(username, password);
+            int userId = UserDao.loginUser(username, masterPassword);
             if (userId >= 1) {
-                new MainPage(userId);
+                new MainPage(userId, masterPassword);
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Username or password is wrong!");

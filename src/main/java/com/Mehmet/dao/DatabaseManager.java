@@ -23,6 +23,7 @@ public class DatabaseManager {
                 "site_name TEXT NOT NULL," +
                 "site_username TEXT NOT NULL," +
                 "site_password TEXT NOT NULL, "  +
+                "category TEXT NOT NULL" +
                 "user_id INTEGER NOT NULL," +
                 "CONSTRAINT fk_passwords_user_id FOREIGN KEY (user_id) REFERENCES users(user_id)" +
                 ")";

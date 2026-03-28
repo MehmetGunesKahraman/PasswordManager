@@ -19,12 +19,12 @@ public class PasswordsDao {
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 PasswordEntry entry = new PasswordEntry(
+                        rs.getInt("password_id"),
                         rs.getString("site_name"),
                         rs.getString("site_username"),
                         rs.getString("site_password"),
                         rs.getString("category"),
-                        rs.getInt("user_id"),
-                        rs.getInt("password_id")
+                        rs.getInt("user_id")
                         );
                 userthigs.add(entry);
             }
