@@ -2,6 +2,7 @@ package com.Mehmet.dao;
 
 import com.Mehmet.model.PasswordEntry;
 
+import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -33,6 +34,24 @@ public class PasswordsDao {
         } catch (SQLException e) {
             System.out.println("Error: " + e.getMessage());
             return new ArrayList<>();
+        }
+    }
+
+    public static boolean addPassword(String site_name, String site_username, String site_password, String category, int user_id) {
+        String sql = "INSERT INTO passwords (site_name, site_username, site_password, category, user_id) VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection conn = DatabaseManager.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, site_name);
+            pstmt.setString(2, site_username);
+            pstmt.setString(3, site_password);
+            pstmt.setString(4, category);
+            pstmt.setInt(5, user_id);
+            pstmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Password Add error: " + e.getMessage());
+            return false;
         }
     }
 }

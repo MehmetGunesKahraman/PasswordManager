@@ -22,6 +22,13 @@ public class LoginPage extends JFrame {
         JButton loginButton = new JButton("Login");
         JButton registerButton = new JButton("Register");
 
+        SwingUtilities.invokeLater(() -> {
+            JRootPane root = getRootPane();
+            if (root != null) {
+                root.setDefaultButton(loginButton);
+            }
+        });
+
         // Layout Settings
         mainPanel.setLayout(new GridBagLayout());
         mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
@@ -66,7 +73,7 @@ public class LoginPage extends JFrame {
         mainPanel.add(buttonPanel, gbc);
 
 
-        loginButton.addActionListener(e -> {
+        loginButton.addActionListener(  e -> {
             String username = usernameField.getText();
             if (username.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Please enter a username.");

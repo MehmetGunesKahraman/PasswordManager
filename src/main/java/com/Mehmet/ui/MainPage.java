@@ -4,12 +4,16 @@ import com.Mehmet.dao.PasswordsDao;
 import com.Mehmet.model.PasswordEntry;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Objects;
 
 
 public class MainPage extends JFrame {
     private int userId;
+    private JTable table;
+    private DefaultTableModel tableModel;
 
     public MainPage(int userId, String masterPassword) {
         this.userId = userId;
@@ -20,17 +24,31 @@ public class MainPage extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
 
-        Object[][] data = new Object[passwords.size()][4];
-        for (int i = 0; i < passwords.size(); i++) {
-            data[i][0] = passwords.get(i).getSiteName();
-            data[i][1] = passwords.get(i).getSiteUsername();
-            data[i][2] = passwords.get(i).getSitePassword();
-            data[i][3] = passwords.get(i).getCategory();
-        }
-
         String[] columns = {"Site name", "Username", "Password", "Category"};
-        JTable table = new JTable(data, columns);
+        tableModel = new DefaultTableModel(columns, 0);
+        table = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane);
+
+        JButton addPasswordButton = new JButton("Add Password");
+        add(addPasswordButton, BorderLayout.SOUTH);
+
+        addPasswordButton.addActionListener(e -> {
+            new AddPasswordDialog(userId, this);
+        });
+        refreshTable();
+    }
+
+    public void refreshTable() {
+        ArrayList<PasswordEntry> passwords = PasswordsDao.getPassword(this.userId);
+        tableModel.setRowCount(0);
+        for (PasswordEntry p : passwords) {
+            tableModel.addRow(new Object[] {
+                    p.getSiteName(),
+                    p.getSiteUsername(),
+                    p.getSitePassword(),
+                    p.getCategory()
+            });
+        }
     }
 }
