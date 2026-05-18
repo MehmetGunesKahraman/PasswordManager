@@ -2,21 +2,20 @@ package com.Mehmet.ui;
 
 import com.Mehmet.dao.PasswordsDao;
 import com.Mehmet.model.PasswordEntry;
+import com.Mehmet.service.CipherEngine;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Objects;
 
 
 public class MainPage extends JFrame {
     private int userId;
     private JTable table;
     private DefaultTableModel tableModel;
+    private int shift;
+    CipherEngine CP = new CipherEngine();
 
     public void refreshTable() {
         ArrayList<PasswordEntry> passwords = PasswordsDao.getPassword(this.userId);
@@ -34,12 +33,12 @@ public class MainPage extends JFrame {
 
     public MainPage(int userId, String masterPassword) {
         this.userId = userId;
-        ArrayList<PasswordEntry> passwords = PasswordsDao.getPassword(userId);
+        this.shift = CP.calculateShift(masterPassword);
+
         setTitle("Main");
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-
         String[] columns = {"Site name", "Username", "Password", "Category", "password_id"};
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
@@ -72,7 +71,7 @@ public class MainPage extends JFrame {
         add(buttonPanel, BorderLayout.SOUTH);
 
         addPasswordButton.addActionListener(e -> {
-            new AddPasswordDialog(userId, this);
+            new AddPasswordDialog(userId, this, masterPassword, shift);
         });
 
 
@@ -88,7 +87,7 @@ public class MainPage extends JFrame {
             String siteCategory = (String)tableModel.getValueAt(row, 3);
             int passwordId = (int)tableModel.getValueAt(row, 4);
 
-            new EditPasswordDialog(this, siteName, siteUserName, sitePassword, siteCategory, passwordId);
+            new EditPasswordDialog(this, siteName, siteUserName, sitePassword, siteCategory, passwordId, shift);
         });
 
         showPasswordButton.addActionListener(e -> {
@@ -103,7 +102,8 @@ public class MainPage extends JFrame {
                 JOptionPane.showMessageDialog(this, "Password couldn't found");
                 return;
             } else {
-                JOptionPane.showMessageDialog(this, "Password: " + realPassword);
+                String decryptedPassword = CP.decrypt(realPassword, shift);
+                JOptionPane.showMessageDialog(this, "Password: " + decryptedPassword);
 
             }
         });

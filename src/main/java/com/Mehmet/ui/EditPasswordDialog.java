@@ -1,24 +1,33 @@
 package com.Mehmet.ui;
 
-import com.Mehmet.Main;
 import com.Mehmet.dao.PasswordsDao;
+import com.Mehmet.service.CipherEngine;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class EditPasswordDialog extends JDialog {
-    public EditPasswordDialog(MainPage mainPage, String siteName, String siteUserName, String sitePassword, String siteCategory, int passwordId) {
+    CipherEngine CP = new CipherEngine();
+
+    public EditPasswordDialog(MainPage mainPage, String siteName, String siteUserName, String sitePassword, String siteCategory, int passwordId, int shift) {
         setTitle("Edit");
         setSize(350, 250);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
+        //DS
+        String encryptedRealPassword = PasswordsDao.showOnlyPassword(passwordId);
+        String decryptedRealPassword = CP.decrypt(encryptedRealPassword, shift);
+
         JTextField siteNameField = new JTextField(20);
         siteNameField.setText(siteName);
         JTextField siteUsernameField = new JTextField(20);
         siteUsernameField.setText(siteUserName);
+
+        //DS
         JPasswordField sitePasswordField = new JPasswordField(20);
-        sitePasswordField.setText(sitePassword);
+        sitePasswordField.setText(decryptedRealPassword);
+
         JTextField siteCategoryField = new JTextField(20);
         siteCategoryField.setText(siteCategory);
 
@@ -55,11 +64,14 @@ public class EditPasswordDialog extends JDialog {
             char[] passwordChars = sitePasswordField.getPassword();
             String save_sitePassword = new String(passwordChars);
             String save_siteCategory = siteCategoryField.getText();
+
             if (save_siteName.isEmpty() || save_siteUsername.isEmpty() || save_sitePassword.isEmpty() || save_siteCategory.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Please fill all the spaces.");
                 return;
             }
-            if (PasswordsDao.editPassword(save_siteName, save_siteUsername, save_sitePassword, save_siteCategory, passwordId)) {
+
+            String encryptedPassword = CP.encrypt(save_sitePassword, shift);
+            if (PasswordsDao.editPassword(save_siteName, save_siteUsername, encryptedPassword, save_siteCategory, passwordId)) {
                 JOptionPane.showMessageDialog(this, "Edited Successfully!");
                 mainPage.refreshTable();
                 dispose();

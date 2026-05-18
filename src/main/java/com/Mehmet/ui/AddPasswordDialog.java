@@ -1,43 +1,45 @@
 package com.Mehmet.ui;
 import com.Mehmet.dao.PasswordsDao;
+import com.Mehmet.service.CipherEngine;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class AddPasswordDialog extends JDialog {
-    public AddPasswordDialog(int userId, MainPage mainPage) {
+    public AddPasswordDialog(int userId, MainPage mainPage, String masterPassword, int shift) {
+        CipherEngine CP = new CipherEngine();
 
         setTitle("Add Password");
         setSize(350, 250);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        JTextField sitenameField = new JTextField(20);
-        JTextField siteusernameField = new JTextField(20);
-        JPasswordField sitepasswordField = new JPasswordField(20);
-        JTextField sitecategoryField = new JTextField(20);
+        JTextField siteNameField = new JTextField(20);
+        JTextField siteUsernameField = new JTextField(20);
+        JPasswordField sitePasswordField = new JPasswordField(20);
+        JTextField siteCategoryField = new JTextField(20);
 
-        JLabel sitenameLabel = new JLabel("Site name");
-        JLabel siteusernameLabel = new JLabel("Username");
-        JLabel sitepasswordLabel = new JLabel("Password");
-        JLabel sitecategoryLabel = new JLabel("Category");
+        JLabel siteNameLabel = new JLabel("Site name");
+        JLabel siteUsernameLabel = new JLabel("Username");
+        JLabel sitePasswordLabel = new JLabel("Password");
+        JLabel siteCategoryLabel = new JLabel("Category");
 
         JButton saveButton = new JButton("Save");
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayout(4, 2, 5, 5));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(30, 10, 30, 10));
-        mainPanel.add(sitenameLabel);
-        mainPanel.add(sitenameField);
+        mainPanel.add(siteNameLabel);
+        mainPanel.add(siteNameField);
 
-        mainPanel.add(siteusernameLabel);
-        mainPanel.add(siteusernameField);
+        mainPanel.add(siteUsernameLabel);
+        mainPanel.add(siteUsernameField);
 
-        mainPanel.add(sitepasswordLabel);
-        mainPanel.add(sitepasswordField);
+        mainPanel.add(sitePasswordLabel);
+        mainPanel.add(sitePasswordField);
 
-        mainPanel.add(sitecategoryLabel);
-        mainPanel.add(sitecategoryField);
+        mainPanel.add(siteCategoryLabel);
+        mainPanel.add(siteCategoryField);
         add(mainPanel, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -45,16 +47,18 @@ public class AddPasswordDialog extends JDialog {
         add(buttonPanel, BorderLayout.SOUTH);
 
         saveButton.addActionListener(e -> {
-            String sitename = sitenameField.getText();
-            String siteusername = siteusernameField.getText();
-            char[] passwordChars = sitepasswordField.getPassword();
-            String sitepassword = new String(passwordChars);
-            String sitecategory = sitecategoryField.getText();
-            if (sitename.isEmpty() || siteusername.isEmpty() || sitepassword.isEmpty() || sitecategory.isEmpty()) {
+            String siteName = siteNameField.getText();
+            String siteUsername = siteUsernameField.getText();
+            char[] passwordChars = sitePasswordField.getPassword();
+            String sitePassword = new String(passwordChars);
+            String siteCategory = siteCategoryField.getText();
+            if (siteName.isEmpty() || siteUsername.isEmpty() || sitePassword.isEmpty() || siteCategory.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Please fill all the spaces.");
                 return;
             }
-            if (PasswordsDao.addPassword(sitename, siteusername, sitepassword, sitecategory, userId)) {
+
+            String encryptedPassword = CP.encrypt(sitePassword, shift);
+            if (PasswordsDao.addPassword(siteName, siteUsername, encryptedPassword, siteCategory, userId)) {
                 JOptionPane.showMessageDialog(this, "Added Successfully!");
                 mainPage.refreshTable();
                 dispose();

@@ -80,15 +80,18 @@ public class LoginPage extends JFrame {
                 return;
             }
             char[] passwordChar = passwordField.getPassword();
-            String masterPassword = new String(passwordChar);
-            if (masterPassword.isEmpty()) {
+            String password = new String(passwordChar);
+            if (password.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Please enter a password.");
                 return;
             }
 
-            int userId = UserDao.loginUser(username, masterPassword);
+            int shift = CP.calculateShift(password);
+            String encryptedPassword = CP.encrypt(password, shift);
+
+            int userId = UserDao.loginUser(username, encryptedPassword);
             if (userId >= 1) {
-                new MainPage(userId, masterPassword);
+                new MainPage(userId, password);
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Username or password is wrong!");
@@ -108,7 +111,11 @@ public class LoginPage extends JFrame {
                 JOptionPane.showMessageDialog(this, "Please enter a password.");
                 return;
             }
-            if (UserDao.registerUser(username, password)) {
+
+            int shift = CP.calculateShift(password);
+            String encryptedPassword = CP.encrypt(password, shift);
+
+            if (UserDao.registerUser(username, encryptedPassword)) {
                 JOptionPane.showMessageDialog(this, "User registered successfully.");
             } else {
                 JOptionPane.showMessageDialog(this, "User already exists!");
