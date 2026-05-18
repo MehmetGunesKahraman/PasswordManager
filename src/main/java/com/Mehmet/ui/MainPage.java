@@ -9,18 +9,18 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
 
-
 public class MainPage extends JFrame {
     private int userId;
     private JTable table;
     private DefaultTableModel tableModel;
     private int shift;
+    private ArrayList<PasswordEntry> allPasswords;
     CipherEngine CP = new CipherEngine();
 
     public void refreshTable() {
-        ArrayList<PasswordEntry> passwords = PasswordsDao.getPassword(this.userId);
+        this.allPasswords = PasswordsDao.getPassword(this.userId);
         tableModel.setRowCount(0);
-        for (PasswordEntry p : passwords) {
+        for (PasswordEntry p : allPasswords) {
             tableModel.addRow(new Object[] {
                     p.getSiteName(),
                     p.getSiteUsername(),
@@ -28,6 +28,51 @@ public class MainPage extends JFrame {
                     p.getCategory(),
                     p.getPasswordId()
             });
+        }
+    }
+
+    public void filterTable(String searchTerm, String searchType) {
+        tableModel.setRowCount(0);
+        if (searchType.equals("Site Name")) {
+            for (PasswordEntry p : allPasswords) {
+                if (p.getSiteName().toLowerCase().contains(searchTerm.toLowerCase())) {
+                    tableModel.addRow(new Object[] {
+                            p.getSiteName(),
+                            p.getSiteUsername(),
+                            "*********",
+                            p.getCategory(),
+                            p.getPasswordId()
+                    });
+                }
+            }
+        }
+
+        if (searchType.equals("Username")) {
+            for (PasswordEntry p : allPasswords) {
+                if (p.getSiteUsername().toLowerCase().contains(searchTerm.toLowerCase())) {
+                    tableModel.addRow(new Object[] {
+                            p.getSiteName(),
+                            p.getSiteUsername(),
+                            "*********",
+                            p.getCategory(),
+                            p.getPasswordId()
+                    });
+                }
+            }
+        }
+
+        if (searchType.equals("Category")) {
+            for (PasswordEntry p : allPasswords) {
+                if (p.getCategory().toLowerCase().contains(searchTerm.toLowerCase())) {
+                    tableModel.addRow(new Object[] {
+                            p.getSiteName(),
+                            p.getSiteUsername(),
+                            "*********",
+                            p.getCategory(),
+                            p.getPasswordId()
+                    });
+                }
+            }
         }
     }
 
@@ -39,6 +84,33 @@ public class MainPage extends JFrame {
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JLabel searchByLabel = new JLabel("Search by: ");
+        JComboBox<String> searchType = new JComboBox<>(new String[]{"Site Name", "Username", "Category"});
+        JTextField searchField = new JTextField(10);
+        JButton searchButton = new JButton("Search");
+        JButton refreshButton = new JButton("Refresh");
+        searchPanel.add(searchByLabel);
+        searchPanel.add(searchType);
+        searchPanel.add(searchField);
+        searchPanel.add(searchButton);
+        searchPanel.add(refreshButton);
+        add(searchPanel, BorderLayout.NORTH);
+
+        searchButton.addActionListener(e -> {
+            String searchValue = searchField.getText();
+            String selectedSearchType = (String) searchType.getSelectedItem();
+            if (searchValue.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter something to search.");
+            }
+            filterTable(searchValue, selectedSearchType);
+        });
+
+        refreshButton.addActionListener(e -> {
+            refreshTable();
+        });
+
         String[] columns = {"Site name", "Username", "Password", "Category", "password_id"};
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
