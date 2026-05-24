@@ -7,7 +7,7 @@ import com.Mehmet.ui.MainPage;
 public class Main {
     public static void main(String[] args) {
         DatabaseManager.initializeDatabase();
-        LoginPage Pencere = new LoginPage();
+        LoginPage window = new LoginPage();
     }
 
 }

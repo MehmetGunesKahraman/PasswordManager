@@ -175,7 +175,7 @@ public class MainPage extends JFrame {
                 return;
             } else {
                 String decryptedPassword = CP.decrypt(realPassword, shift);
-                JOptionPane.showMessageDialog(this, "Password: " + decryptedPassword);
+                new ShowPasswordDialog(decryptedPassword);
 
             }
         });
