@@ -15,6 +15,7 @@ public class ShowPasswordDialog extends JDialog {
 
         JLabel passwordLabel = new JLabel("Password: ");
         JTextField showPasswordField = new JTextField(passwordShow);
+        showPasswordField.setFocusable(false);
         showPasswordField.setEditable(false);
         showPasswordField.setBorder(null);
         showPasswordField.setBackground(null);
