@@ -4,10 +4,59 @@ import com.Mehmet.dao.PasswordsDao;
 import com.Mehmet.service.CipherEngine;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 
 public class EditPasswordDialog extends JDialog {
+    private JLabel passwordstrengthLabel = new JLabel();
+
     CipherEngine CP = new CipherEngine();
+
+    void checkStrength(String sField) {
+        int criteria = 0;
+
+        /* if (sField.length() < 8) {
+            passwordstrengthLabel.setText("Min 8 letters are recommended");
+            return;
+        } */
+
+        if (sField.length() >= 12 ) {
+            criteria++;
+
+        }
+        boolean containsDigit = sField.matches(".*\\d.*");
+        if (containsDigit) {
+            criteria++;
+        }
+
+        boolean hasUppercase = sField.matches(".*[A-Z].*");
+        if (hasUppercase) {
+            criteria++;
+        }
+
+        boolean hasLowercase = sField.matches(".*[a-z].*");
+        if (hasLowercase) {
+            criteria++;
+        }
+
+        boolean hasSpecial = sField.matches(".*[!@#$%^&*(),.?\":{}|<>].*");
+        if (hasSpecial) {
+            criteria++;
+        }
+
+        if (criteria <= 2) {
+            passwordstrengthLabel.setText("Weak");
+            passwordstrengthLabel.setForeground(Color.RED);
+        }
+        else if (criteria <= 4) {
+            passwordstrengthLabel.setText("Middle");
+            passwordstrengthLabel.setForeground(Color.ORANGE);
+        } else {
+            passwordstrengthLabel.setText("Strong");
+            passwordstrengthLabel.setForeground(Color.GREEN);
+        }
+    }
 
     public EditPasswordDialog(MainPage mainPage, String siteName, String siteUserName, String sitePassword, String siteCategory, int passwordId, int shift) {
         setTitle("Edit");
@@ -27,6 +76,7 @@ public class EditPasswordDialog extends JDialog {
         //DS
         JPasswordField sitePasswordField = new JPasswordField(20);
         sitePasswordField.setText(decryptedRealPassword);
+        checkStrength(decryptedRealPassword);
 
         JTextField siteCategoryField = new JTextField(20);
         siteCategoryField.setText(siteCategory);
@@ -34,12 +84,13 @@ public class EditPasswordDialog extends JDialog {
         JLabel siteNameLabel = new JLabel("Site name");
         JLabel siteUsernameLabel = new JLabel("Username");
         JLabel sitePasswordLabel = new JLabel("Password");
+        JLabel showStrengthLabel = new JLabel("Password Strength");
         JLabel siteCategoryLabel = new JLabel("Category");
 
         JButton saveButton = new JButton("Save");
 
         JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayout(4, 2, 5, 5));
+        mainPanel.setLayout(new GridLayout(5, 2, 5, 5));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(30, 10, 30, 10));
         mainPanel.add(siteNameLabel);
         mainPanel.add(siteNameField);
@@ -49,6 +100,8 @@ public class EditPasswordDialog extends JDialog {
 
         mainPanel.add(sitePasswordLabel);
         mainPanel.add(sitePasswordField);
+        mainPanel.add(showStrengthLabel);
+        mainPanel.add(passwordstrengthLabel);
 
         mainPanel.add(siteCategoryLabel);
         mainPanel.add(siteCategoryField);
@@ -57,6 +110,29 @@ public class EditPasswordDialog extends JDialog {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         buttonPanel.add(saveButton);
         add(buttonPanel, BorderLayout.SOUTH);
+
+        sitePasswordField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                char[] charsPassword = sitePasswordField.getPassword();
+                String changingPassword = new String(charsPassword);
+                checkStrength(changingPassword);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                char[] charsPassword = sitePasswordField.getPassword();
+                String changingPassword = new String(charsPassword);
+                checkStrength(changingPassword);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                char[] charsPassword = sitePasswordField.getPassword();
+                String changingPassword = new String(charsPassword);
+                checkStrength(changingPassword);
+            }
+        });
 
         saveButton.addActionListener(e -> {
             String save_siteName = siteNameField.getText();
