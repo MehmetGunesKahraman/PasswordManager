@@ -119,6 +119,7 @@ public class MainPage extends JFrame {
             }
         };
         table = new JTable(tableModel);
+        table.setAutoCreateRowSorter(true);
         table.getColumnModel().getColumn(4).setWidth(0);
         table.getColumnModel().getColumn(4).setMinWidth(0);
         table.getColumnModel().getColumn(4).setMaxWidth(0);
