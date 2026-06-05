@@ -3,6 +3,8 @@ package com.Mehmet.ui;
 import com.Mehmet.dao.PasswordsDao;
 import com.Mehmet.model.PasswordEntry;
 import com.Mehmet.service.CipherEngine;
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -15,6 +17,7 @@ public class MainPage extends JFrame {
     private DefaultTableModel tableModel;
     private int shift;
     private ArrayList<PasswordEntry> allPasswords;
+    private boolean isDarkMode = true;
     CipherEngine CP = new CipherEngine();
 
     public void refreshTable() {
@@ -85,18 +88,26 @@ public class MainPage extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel northPanel = new JPanel(new BorderLayout());
+        JPanel dlmodePanel = new JPanel(new FlowLayout());
+        JPanel searchPanel = new JPanel(new FlowLayout());
+
+        JButton toggledlButton = new JButton("Dark/Light Mode");
         JLabel searchByLabel = new JLabel("Search by: ");
         JComboBox<String> searchType = new JComboBox<>(new String[]{"Site Name", "Username", "Category"});
         JTextField searchField = new JTextField(10);
         JButton searchButton = new JButton("Search");
         JButton refreshButton = new JButton("Refresh");
+        dlmodePanel.add(toggledlButton);
         searchPanel.add(searchByLabel);
         searchPanel.add(searchType);
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
         searchPanel.add(refreshButton);
-        add(searchPanel, BorderLayout.NORTH);
+
+        northPanel.add(dlmodePanel, BorderLayout.WEST);
+        northPanel.add(searchPanel, BorderLayout.EAST);
+        add(northPanel, BorderLayout.NORTH);
 
         searchButton.addActionListener(e -> {
             String searchValue = searchField.getText();
@@ -142,6 +153,18 @@ public class MainPage extends JFrame {
         buttonPanel.add(deletePasswordButton);
 
         add(buttonPanel, BorderLayout.SOUTH);
+
+        toggledlButton.addActionListener(e -> {
+            if (isDarkMode) {
+                isDarkMode = false;
+                FlatLightLaf.setup();
+                SwingUtilities.updateComponentTreeUI(this);
+            } else {
+                isDarkMode = true;
+                FlatDarkLaf.setup();
+                SwingUtilities.updateComponentTreeUI(this);
+            }
+        });
 
         addPasswordButton.addActionListener(e -> {
             new AddPasswordDialog(userId, this, masterPassword, shift);
