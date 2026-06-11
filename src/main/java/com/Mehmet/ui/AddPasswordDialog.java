@@ -9,6 +9,7 @@ import java.awt.*;
 
 public class AddPasswordDialog extends JDialog {
     private JLabel passwordstrengthLabel = new JLabel();
+
     void checkStrength(String sField) {
         int criteria = 0;
 
@@ -58,9 +59,17 @@ public class AddPasswordDialog extends JDialog {
         CipherEngine CP = new CipherEngine();
 
         setTitle("Add Password");
-        setSize(370, 250);
+        setSize(400, 250);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
+
+        ImageIcon showPasswordIcon = new ImageIcon(getClass().getResource("/show.png"));
+        Image scaledShow = showPasswordIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        final ImageIcon showIcon = new ImageIcon(scaledShow);
+
+        ImageIcon hidePasswordIcon = new ImageIcon(getClass().getResource("/hide.png"));
+        Image scaledHide = hidePasswordIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        final ImageIcon hideIcon = new ImageIcon(scaledHide);
 
         JLabel siteNameLabel = new JLabel("Site name");
         JLabel siteUsernameLabel = new JLabel("Username");
@@ -74,6 +83,13 @@ public class AddPasswordDialog extends JDialog {
         JPasswordField sitePasswordField = new JPasswordField(20);
         JTextField siteCategoryField = new JTextField(20);
 
+        JButton showPasswordIconButton = new JButton(showIcon);
+        showPasswordIconButton.setMargin(new Insets(0, 0, 0, 0));
+        showPasswordIconButton.setBorderPainted(false);
+        showPasswordIconButton.setContentAreaFilled(false);
+        showPasswordIconButton.setFocusPainted(false);
+        showPasswordIconButton.setOpaque(false);
+
         JButton saveButton = new JButton("Save");
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
@@ -82,41 +98,44 @@ public class AddPasswordDialog extends JDialog {
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        mainPanel.add(siteNameLabel ,gbc);
+        mainPanel.add(siteNameLabel , gbc);
         gbc.gridx = 1;
         gbc.gridy = 0;
         mainPanel.add(siteNameField, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        mainPanel.add(siteUsernameLabel ,gbc);
+        mainPanel.add(siteUsernameLabel , gbc);
         gbc.gridx = 1;
         gbc.gridy = 1;
-        mainPanel.add(siteUsernameField ,gbc);
+        mainPanel.add(siteUsernameField , gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
-        mainPanel.add(sitePasswordLabel ,gbc);
+        mainPanel.add(sitePasswordLabel , gbc);
         gbc.gridx = 1;
         gbc.gridy = 2;
-        mainPanel.add(sitePasswordField ,gbc);
+        mainPanel.add(sitePasswordField , gbc);
         gbc.gridx = 2;
         gbc.gridy = 2;
-        mainPanel.add(strongPasswordToolkit ,gbc);
+        mainPanel.add(showPasswordIconButton, gbc);
+        gbc.gridx = 3;
+        gbc.gridy = 2;
+        mainPanel.add(strongPasswordToolkit , gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 3;
-        mainPanel.add(showStrengthLabel ,gbc);
+        mainPanel.add(showStrengthLabel , gbc);
         gbc.gridx = 1;
         gbc.gridy = 3;
-        mainPanel.add(passwordstrengthLabel ,gbc);
+        mainPanel.add(passwordstrengthLabel , gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 4;
-        mainPanel.add(siteCategoryLabel ,gbc);
+        mainPanel.add(siteCategoryLabel , gbc);
         gbc.gridx = 1;
         gbc.gridy = 4;
-        mainPanel.add(siteCategoryField ,gbc);
+        mainPanel.add(siteCategoryField , gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 5;
@@ -154,6 +173,16 @@ public class AddPasswordDialog extends JDialog {
                 char[] charsPassword = sitePasswordField.getPassword();
                 String changingPassword = new String(charsPassword);
                 checkStrength(changingPassword);
+            }
+        });
+
+        showPasswordIconButton.addActionListener(e -> {
+            if (sitePasswordField.getEchoChar() == 0) {
+                sitePasswordField.setEchoChar('•');
+                showPasswordIconButton.setIcon(showIcon);
+            } else {
+                sitePasswordField.setEchoChar((char) 0);
+                showPasswordIconButton.setIcon(hideIcon);
             }
         });
 

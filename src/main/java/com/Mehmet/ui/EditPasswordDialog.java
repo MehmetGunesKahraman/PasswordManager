@@ -60,9 +60,17 @@ public class EditPasswordDialog extends JDialog {
 
     public EditPasswordDialog(MainPage mainPage, String siteName, String siteUserName, String sitePassword, String siteCategory, int passwordId, int shift) {
         setTitle("Edit");
-        setSize(370, 250);
+        setSize(400, 250);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
+
+        ImageIcon showPasswordIcon = new ImageIcon(getClass().getResource("/show.png"));
+        Image scaledShow = showPasswordIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        final ImageIcon showIcon = new ImageIcon(scaledShow);
+
+        ImageIcon hidePasswordIcon = new ImageIcon(getClass().getResource("/hide.png"));
+        Image scaledHide = hidePasswordIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        final ImageIcon hideIcon = new ImageIcon(scaledHide);
 
         //DS
         String encryptedRealPassword = PasswordsDao.showOnlyPassword(passwordId);
@@ -87,6 +95,13 @@ public class EditPasswordDialog extends JDialog {
         JLabel showStrengthLabel = new JLabel("Password Strength");
         JLabel strongPasswordToolkit = new JLabel("?");
         JLabel siteCategoryLabel = new JLabel("Category");
+
+        JButton showPasswordIconButton = new JButton(showIcon);
+        showPasswordIconButton.setMargin(new Insets(0, 0, 0, 0));
+        showPasswordIconButton.setBorderPainted(false);
+        showPasswordIconButton.setContentAreaFilled(false);
+        showPasswordIconButton.setFocusPainted(false);
+        showPasswordIconButton.setOpaque(false);
 
         JButton saveButton = new JButton("Save");
 
@@ -115,6 +130,9 @@ public class EditPasswordDialog extends JDialog {
         gbc.gridy = 2;
         mainPanel.add(sitePasswordField ,gbc);
         gbc.gridx = 2;
+        gbc.gridy = 2;
+        mainPanel.add(showPasswordIconButton, gbc);
+        gbc.gridx = 3;
         gbc.gridy = 2;
         mainPanel.add(strongPasswordToolkit ,gbc);
 
@@ -168,6 +186,16 @@ public class EditPasswordDialog extends JDialog {
                 char[] charsPassword = sitePasswordField.getPassword();
                 String changingPassword = new String(charsPassword);
                 checkStrength(changingPassword);
+            }
+        });
+
+        showPasswordIconButton.addActionListener(e -> {
+            if (sitePasswordField.getEchoChar() == 0) {
+                sitePasswordField.setEchoChar('•');
+                showPasswordIconButton.setIcon(showIcon);
+            } else {
+                sitePasswordField.setEchoChar((char) 0);
+                showPasswordIconButton.setIcon(hideIcon);
             }
         });
 
