@@ -58,44 +58,81 @@ public class AddPasswordDialog extends JDialog {
         CipherEngine CP = new CipherEngine();
 
         setTitle("Add Password");
-        setSize(350, 250);
+        setSize(370, 250);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
+
+        JLabel siteNameLabel = new JLabel("Site name");
+        JLabel siteUsernameLabel = new JLabel("Username");
+        JLabel sitePasswordLabel = new JLabel("Password");
+        JLabel strongPasswordToolkit = new JLabel("?");
+        JLabel showStrengthLabel = new JLabel("Password Strength");
+        JLabel siteCategoryLabel = new JLabel("Category");
 
         JTextField siteNameField = new JTextField(20);
         JTextField siteUsernameField = new JTextField(20);
         JPasswordField sitePasswordField = new JPasswordField(20);
         JTextField siteCategoryField = new JTextField(20);
 
-        JLabel siteNameLabel = new JLabel("Site name");
-        JLabel siteUsernameLabel = new JLabel("Username");
-        JLabel sitePasswordLabel = new JLabel("Password");
-        JLabel showStrengthLabel = new JLabel("Password Strength");
-        JLabel siteCategoryLabel = new JLabel("Category");
-
         JButton saveButton = new JButton("Save");
 
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayout(5, 2, 5, 5));
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(30, 10, 30, 10));
-        mainPanel.add(siteNameLabel);
-        mainPanel.add(siteNameField);
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
 
-        mainPanel.add(siteUsernameLabel);
-        mainPanel.add(siteUsernameField);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        mainPanel.add(siteNameLabel ,gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        mainPanel.add(siteNameField, gbc);
 
-        mainPanel.add(sitePasswordLabel);
-        mainPanel.add(sitePasswordField);
-        mainPanel.add(showStrengthLabel);
-        mainPanel.add(passwordstrengthLabel);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        mainPanel.add(siteUsernameLabel ,gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        mainPanel.add(siteUsernameField ,gbc);
 
-        mainPanel.add(siteCategoryLabel);
-        mainPanel.add(siteCategoryField);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        mainPanel.add(sitePasswordLabel ,gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        mainPanel.add(sitePasswordField ,gbc);
+        gbc.gridx = 2;
+        gbc.gridy = 2;
+        mainPanel.add(strongPasswordToolkit ,gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        mainPanel.add(showStrengthLabel ,gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        mainPanel.add(passwordstrengthLabel ,gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        mainPanel.add(siteCategoryLabel ,gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 4;
+        mainPanel.add(siteCategoryField ,gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        mainPanel.add(saveButton ,gbc);
+
         add(mainPanel, BorderLayout.CENTER);
 
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        buttonPanel.add(saveButton);
-        add(buttonPanel, BorderLayout.SOUTH);
+        strongPasswordToolkit.setToolTipText(
+                "For a strong password:\n" +
+                "Length: minimum 8 characters, ideal 12+\n" +
+                "Uppercase: minimum 1\n" +
+                "Lowercase: minimum 1\n" +
+                "Number: minimum 1\n" +
+                "Special character: minimum 1 (!@#$%^&*)"
+        );
 
         sitePasswordField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
